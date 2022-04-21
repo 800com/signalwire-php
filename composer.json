@@ -39,7 +39,7 @@
     }
   ],
   "require": {
-    "php": "^7",
+    "php": ">=7",
     "twilio/sdk": "^6.10",
     "ratchet/pawl": "^0.4.1",
     "monolog/monolog": "^1.24 || ^2.0",
@@ -48,7 +48,7 @@
     "guzzlehttp/guzzle": ">=6.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7",
+    "phpunit/phpunit": ">=7",
     "php-vcr/php-vcr": "dev-master"
   }
 }
