@@ -11,7 +11,7 @@ class RelayMessagingTest extends BaseRelayCase
     $response = json_decode('{"requester_nodeid":"uuid","responder_nodeid":"uuid","result":{"code":"200","message":"Receiving all inbound related to the requested relay contexts"}}');
     $this->_mockResponse([$response]);
 
-    $mock = $this->getMockBuilder(\stdClass::class)->setMethods(['foo'])->getMock();
+    $mock = $this->getMockBuilder(\stdClass::class)->addMethods(['foo'])->getMock();
     $mock->expects($this->once())->method('foo');
 
     $this->client->messaging->onReceive(['home', 'office'], [$mock, 'foo'])->done(function() {
@@ -27,7 +27,7 @@ class RelayMessagingTest extends BaseRelayCase
     $response = json_decode('{"requester_nodeid":"uuid","responder_nodeid":"uuid","result":{"code":"200","message":"Receiving all inbound related to the requested relay contexts"}}');
     $this->_mockResponse([$response]);
 
-    $mock = $this->getMockBuilder(\stdClass::class)->setMethods(['foo'])->getMock();
+    $mock = $this->getMockBuilder(\stdClass::class)->addMethods(['foo'])->getMock();
     $mock->expects($this->once())->method('foo');
 
     $this->client->messaging->onStateChange(['home', 'office'], [$mock, 'foo'])->done(function() {

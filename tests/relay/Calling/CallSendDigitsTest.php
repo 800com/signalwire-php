@@ -9,13 +9,15 @@ class RelayCallingCallSendDigitsTest extends RelayCallingBaseActionCase
   public static $success;
   public static $fail;
 
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void
+  {
     self::$notificationFinished = json_decode('{"event_type":"calling.call.send_digits","params":{"control_id":"'.self::UUID.'","call_id":"call-id","node_id":"node-id","state":"finished"}}');
     self::$success = json_decode('{"result":{"code":"200","message":"message","control_id":"'.self::UUID.'"}}');
     self::$fail = json_decode('{"result":{"code":"400","message":"some error","control_id":"'.self::UUID.'"}}');
   }
 
-  protected function setUp() {
+  protected function setUp(): void
+  {
     parent::setUp();
 
     $this->_setCallReady();
@@ -27,7 +29,7 @@ class RelayCallingCallSendDigitsTest extends RelayCallingBaseActionCase
     $this->call->sendDigits('1234')->done(function($result) {
       $this->assertInstanceOf('SignalWire\Relay\Calling\Results\SendDigitsResult', $result);
       $this->assertTrue($result->isSuccessful());
-      $this->assertObjectHasAttribute('state', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('state', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationFinished);
   }

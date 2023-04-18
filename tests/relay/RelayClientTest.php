@@ -58,7 +58,7 @@ class RelayClientTest extends BaseRelayCase
 
   public function testOnSocketOpenWithSuccess(): void {
     $mockOnReady = $this->getMockBuilder(\stdClass::class)
-      ->setMethods(['__invoke'])
+      ->addMethods(['__invoke'])
       ->getMock();
     $mockOnReady->expects($this->once())->method('__invoke');
     $this->client->on('signalwire.ready', $mockOnReady);
@@ -88,7 +88,7 @@ class RelayClientTest extends BaseRelayCase
 
   public function testOnSocketOpenOnTimeout(): void {
     $mockOnReady = $this->getMockBuilder(\stdClass::class)
-      ->setMethods(['__invoke'])
+      ->addMethods(['__invoke'])
       ->getMock();
     $mockOnReady->expects($this->never())->method('__invoke');
     $this->client->on('signalwire.ready', $mockOnReady);

@@ -9,13 +9,15 @@ class RelayCallingCallPromptTest extends RelayCallingBaseActionCase
   public static $success;
   public static $fail;
 
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void
+  {
     self::$notificationFinished = json_decode('{"event_type":"calling.call.collect","params":{"control_id":"'.self::UUID.'","call_id":"call-id","node_id":"node-id","result":{"type":"digit","params":{"digits":"12345","terminator":"#"}}}}');
     self::$success = json_decode('{"result":{"code":"200","message":"message","control_id":"'.self::UUID.'"}}');
     self::$fail = json_decode('{"result":{"code":"400","message":"some error","control_id":"'.self::UUID.'"}}');
   }
 
-  protected function setUp() {
+  protected function setUp(): void
+  {
     parent::setUp();
 
     $this->_setCallReady();
@@ -253,8 +255,8 @@ class RelayCallingCallPromptTest extends RelayCallingBaseActionCase
     $this->assertTrue($result->isSuccessful());
     $this->assertEquals($result->getType(), 'digit');
     $this->assertEquals($result->getTerminator(), '#');
-    $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-    $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+    $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+    $this->assertObjectHasProperty('params', $result->getEvent()->payload);
   }
 
   /**

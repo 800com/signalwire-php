@@ -6,7 +6,8 @@ use SignalWire\Relay\Calling\Call;
 
 class RelayCallingCallTest extends RelayCallingBaseActionCase
 {
-  protected function setUp() {
+  protected function setUp(): void
+  {
     parent::setUp();
     $this->_successResponse = \React\Promise\resolve(json_decode('{"result":{"code":"200","message":"message","control_id":"' . self::UUID . '"}}'));
     $this->_failResponse = \React\Promise\reject(json_decode('{"result":{"code":"400","message":"some error","control_id":"' . self::UUID . '"}}'));
@@ -779,8 +780,8 @@ class RelayCallingCallTest extends RelayCallingBaseActionCase
     $this->assertEquals($peerCall, $this->call->peer);
     $this->assertEquals($peerCall->id, 'peer-call-id');
     $this->assertEquals($peerCall->peer, $this->call);
-    $this->assertObjectHasAttribute('peer', $result->getEvent()->payload);
-    $this->assertObjectHasAttribute('connect_state', $result->getEvent()->payload);
+    $this->assertObjectHasProperty('peer', $result->getEvent()->payload);
+    $this->assertObjectHasProperty('connect_state', $result->getEvent()->payload);
   }
 
   /**
@@ -792,8 +793,8 @@ class RelayCallingCallTest extends RelayCallingBaseActionCase
     $this->assertEquals($result->getDocument(), 'file.pdf');
     $this->assertEquals($result->getPages(), '1');
     $this->assertEquals($result->getIdentity(), '+1xxx');
-    $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-    $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+    $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+    $this->assertObjectHasProperty('params', $result->getEvent()->payload);
   }
 
   /**

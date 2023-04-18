@@ -19,7 +19,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
   protected static $notificationDigitError;
   protected static $notificationDigitFinished;
 
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void
+  {
     self::$notificationFaxCED = json_decode('{"event_type":"calling.call.detect","params":{"control_id":"'.self::UUID.'","call_id":"call-id","node_id":"node-id","detect":{"type":"fax","params":{"event":"CED"}}}}');
     self::$notificationFaxError = json_decode('{"event_type":"calling.call.detect","params":{"control_id":"'.self::UUID.'","call_id":"call-id","node_id":"node-id","detect":{"type":"fax","params":{"event":"error"}}}}');
     self::$notificationFaxFinished = json_decode('{"event_type":"calling.call.detect","params":{"control_id":"'.self::UUID.'","call_id":"call-id","node_id":"node-id","detect":{"type":"fax","params":{"event":"finished"}}}}');
@@ -37,7 +38,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
     self::$notificationDigitFinished = json_decode('{"event_type":"calling.call.detect","params":{"control_id":"'.self::UUID.'","call_id":"call-id","node_id":"node-id","detect":{"type":"digit","params":{"event":"finished"}}}}');
   }
 
-  protected function setUp() {
+  protected function setUp(): void
+  {
     parent::setUp();
 
     $this->_setCallReady();
@@ -52,8 +54,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'fax');
       $this->assertEquals($result->getResult(), 'CED');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationFaxCED);
   }
@@ -67,8 +69,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'MACHINE');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineMachine);
   }
@@ -82,8 +84,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'digit');
       $this->assertEquals($result->getResult(), '1#');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationDigitDTMF);
   }
@@ -97,8 +99,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertFalse($result->isSuccessful());
       $this->assertEquals($result->getType(), 'fax');
       $this->assertEquals($result->getResult(), '');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationFaxFinished);
   }
@@ -112,8 +114,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertFalse($result->isSuccessful());
       $this->assertEquals($result->getType(), 'fax');
       $this->assertEquals($result->getResult(), '');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationFaxError);
   }
@@ -156,8 +158,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'HUMAN');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineHuman);
   }
@@ -170,8 +172,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertFalse($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'UNKNOWN');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineUnknown);
   }
@@ -211,8 +213,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'MACHINE');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineMachine);
   }
@@ -226,8 +228,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertFalse($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'UNKNOWN');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineUnknown);
   }
@@ -241,8 +243,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertFalse($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), '');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineFinished);
   }
@@ -286,8 +288,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'digit');
       $this->assertEquals($result->getResult(), '1#');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationDigitDTMF);
   }
@@ -328,8 +330,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'fax');
       $this->assertEquals($result->getResult(), 'CED');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationFaxCED);
   }
@@ -369,8 +371,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'MACHINE');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineMachine);
   }
@@ -389,8 +391,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'MACHINE');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
       $this->assertEquals('READY', $result->getEvent()->payload->params->event);
     });
     $this->calling->notificationHandler(self::$notificationMachineMachine);
@@ -407,8 +409,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), 'HUMAN');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
       $this->assertEquals('HUMAN', $result->getEvent()->payload->params->event);
     });
     $this->calling->notificationHandler(self::$notificationMachineHuman);
@@ -422,8 +424,8 @@ class RelayCallingCallDetectTest extends RelayCallingBaseActionCase
       $this->assertFalse($result->isSuccessful());
       $this->assertEquals($result->getType(), 'machine');
       $this->assertEquals($result->getResult(), '');
-      $this->assertObjectHasAttribute('type', $result->getEvent()->payload);
-      $this->assertObjectHasAttribute('params', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('type', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('params', $result->getEvent()->payload);
     });
     $this->calling->notificationHandler(self::$notificationMachineFinished);
   }

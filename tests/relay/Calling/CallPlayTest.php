@@ -9,13 +9,15 @@ class RelayCallingCallPlayTest extends RelayCallingBaseActionCase
   public static $success;
   public static $fail;
 
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void
+  {
     self::$notificationFinished = json_decode('{"event_type":"calling.call.play","params":{"control_id":"'.self::UUID.'","call_id":"call-id","node_id":"node-id","state":"finished"}}');
     self::$success = json_decode('{"result":{"code":"200","message":"message","control_id":"'.self::UUID.'"}}');
     self::$fail = json_decode('{"result":{"code":"400","message":"some error","control_id":"'.self::UUID.'"}}');
   }
 
-  protected function setUp() {
+  protected function setUp(): void
+  {
     parent::setUp();
 
     $this->_setCallReady();
@@ -258,7 +260,7 @@ class RelayCallingCallPlayTest extends RelayCallingBaseActionCase
   public function __syncPlayCheck($result) {
     $this->assertInstanceOf('SignalWire\Relay\Calling\Results\PlayResult', $result);
     $this->assertTrue($result->isSuccessful());
-    $this->assertObjectHasAttribute('state', $result->getEvent()->payload);
+    $this->assertObjectHasProperty('state', $result->getEvent()->payload);
   }
 
   /**

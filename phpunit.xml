@@ -1,12 +1,15 @@
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="tests/bootstrap.php"
-         convertErrorsToExceptions="false"
-         convertNoticesToExceptions="false"
-         convertWarningsToExceptions="false">
-  <testsuites>
-    <testsuite name="tests">
-      <directory suffix=".php">tests</directory>
-    </testsuite>
-  </testsuites>
+<?xml version="1.0"?>
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        backupGlobals="false"
+        bootstrap="tests/bootstrap.php"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
+        cacheDirectory=".phpunit.cache"
+        backupStaticProperties="false"
+>
+    <testsuites>
+        <testsuite name="tests">
+            <directory suffix=".php">tests</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>

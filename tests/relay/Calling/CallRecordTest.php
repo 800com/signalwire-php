@@ -9,13 +9,15 @@ class RelayCallingCallRecordTest extends RelayCallingBaseActionCase
   public static $success;
   public static $fail;
 
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void
+  {
     self::$notificationFinished = json_decode('{"event_type":"calling.call.record","params":{"state":"finished","record":{"audio":{"format":"mp3","direction":"speak","stereo":false}},"url":"record.mp3","control_id":"'.self::UUID.'","size":4096,"duration":4,"call_id":"call-id","node_id":"node-id"}}');
     self::$success = json_decode('{"result":{"code":"200","message":"message","control_id":"'.self::UUID.'","url":"record.mp3"}}');
     self::$fail = json_decode('{"result":{"code":"400","message":"some error","control_id":"'.self::UUID.'"}}');
   }
 
-  protected function setUp() {
+  protected function setUp(): void
+  {
     parent::setUp();
 
     $this->_setCallReady();
@@ -31,7 +33,7 @@ class RelayCallingCallRecordTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getUrl(), 'record.mp3');
       $this->assertEquals($result->getSize(), 4096);
-      $this->assertObjectHasAttribute('url', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('url', $result->getEvent()->payload);
     });
 
     $this->calling->notificationHandler(self::$notificationFinished);
@@ -47,7 +49,7 @@ class RelayCallingCallRecordTest extends RelayCallingBaseActionCase
       $this->assertTrue($result->isSuccessful());
       $this->assertEquals($result->getUrl(), 'record.mp3');
       $this->assertEquals($result->getSize(), 4096);
-      $this->assertObjectHasAttribute('url', $result->getEvent()->payload);
+      $this->assertObjectHasProperty('url', $result->getEvent()->payload);
     });
 
     $this->calling->notificationHandler(self::$notificationFinished);

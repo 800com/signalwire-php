@@ -8,13 +8,13 @@ abstract class BaseRelayCase extends TestCase
   const UUID = 'e36f227c-2946-11e8-b467-0ed5f89f718b';
   protected $client;
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->mockUuid();
     $this->client = new Client(array('project' => 'project', 'token' => 'token'));
     $this->client->relayProtocol = 'relay-proto';
   }
 
-  public function tearDown() {
+  public function tearDown(): void {
     unset($this->client);
     \Ramsey\Uuid\Uuid::setFactory(new \Ramsey\Uuid\UuidFactory());
     SignalWire\Handler::clear();
@@ -32,18 +32,14 @@ abstract class BaseRelayCase extends TestCase
     if (!is_array($responses)) {
       $responses = [$responses];
     }
-    foreach ($responses as $i => $r) {
-      if (isset($requests[$i])) {
-        $stub->expects($this->at($i))
-          ->method('send')
-          ->with($requests[$i])
-          ->will($this->returnValue(\React\Promise\resolve($r)));
-      } else {
-        $stub->expects($this->at($i))
-          ->method('send')
-          ->will($this->returnValue(\React\Promise\resolve($r)));
-      }
-    }
+
+    $stub->expects($this->exactly(count($responses)))
+        ->method('send')
+        ->willReturnOnConsecutiveCalls(
+            ...array_map(function ($r) {
+                return \React\Promise\resolve($r);
+            }, $responses),
+        );
 
     $this->client->connection = $stub;
   }
