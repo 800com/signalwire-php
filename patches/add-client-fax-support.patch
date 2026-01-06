@@ -1,0 +1,29 @@
+--- a/src/Twilio/Rest/Client.php
++++ b/src/Twilio/Rest/Client.php
+@@ -123,6 +123,7 @@ class Client {
+     protected $_content;
+     protected $_conversations;
+     protected $_events;
++    protected $_fax;
+     protected $_flexApi;
+     protected $_frontlineApi;
+     protected $_insights;
+@@ -717,6 +718,18 @@ class Client {
+     }
+
+     /**
++     * Access the Fax Twilio Domain
++     *
++     * @return Fax Fax Twilio Domain
++     */
++    protected function getFax(): Fax {
++        if (!$this->_fax) {
++            $this->_fax = new Fax($this);
++        }
++        return $this->_fax;
++    }
++
++    /**
+      * Access the FlexApi Twilio Domain
+      *
+      * @return FlexApi FlexApi Twilio Domain
