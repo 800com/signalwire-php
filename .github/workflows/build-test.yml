@@ -36,6 +36,18 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-source --no-interaction
 
+      - name: Verify patches applied
+        run: |
+          echo "Checking if Fax classes exist after patches..."
+          ls -la vendor/twilio/sdk/src/Twilio/Rest/Fax/ || echo "Fax directory not found"
+          if [ -f "vendor/twilio/sdk/src/Twilio/Rest/Fax/V1/FaxList.php" ]; then
+            echo "FaxList.php exists, checking syntax..."
+            php -l vendor/twilio/sdk/src/Twilio/Rest/Fax/V1/FaxList.php
+          else
+            echo "FaxList.php not found, re-applying patches..."
+            composer install --prefer-source --no-interaction
+          fi
+
       - name: Run setup tests
         run: |
           chmod +x test-setup.sh
