@@ -22,39 +22,8 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
       - name: Install dependencies
         run: composer install --prefer-source --no-interaction
-
-      - name: Force patch re-application
-        run: |
-          echo "Clearing vendor directory and reinstalling to ensure patches apply correctly..."
-          rm -rf vendor/
-          composer install --prefer-source --no-interaction
-
-      - name: Verify patches applied
-        run: |
-          echo "Checking if Fax classes exist after patches..."
-          ls -la vendor/twilio/sdk/src/Twilio/Rest/Fax/ || echo "Fax directory not found"
-          if [ -f "vendor/twilio/sdk/src/Twilio/Rest/Fax/V1/FaxList.php" ]; then
-            echo "FaxList.php exists, checking syntax..."
-            php -l vendor/twilio/sdk/src/Twilio/Rest/Fax/V1/FaxList.php
-            echo "Checking first 30 lines of FaxList.php:"
-            head -30 vendor/twilio/sdk/src/Twilio/Rest/Fax/V1/FaxList.php
-          else
-            echo "FaxList.php not found after patch application!"
-            exit 1
-          fi
 
       - name: Run setup tests
         run: |
