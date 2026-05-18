@@ -3,7 +3,6 @@
 use PHPUnit\Framework\TestCase;
 use SignalWire\Rest\Client as SignalWireClient;
 use SignalWire\Rest\Fax as SignalWireFax;
-use Twilio\Rest\Client as TwilioClient;
 use Twilio\Rest\Fax as TwilioFax;
 use Twilio\Rest\Fax\V1 as FaxV1;
 use Twilio\Rest\Fax\V1\FaxContext;
@@ -82,26 +81,29 @@ class FaxV1Test extends TestCase
         $this->assertSame(\Twilio\InstanceContext::class, $r->getParentClass()->getName());
     }
 
-    public function testTwilioClientHasFaxPropertyAfterPatch(): void
+    public function testSignalwireClientCachesFaxInstance(): void
     {
-        $r = new ReflectionClass(TwilioClient::class);
-        $this->assertTrue(
-            $r->hasProperty('_fax'),
-            'add-client-fax-support.patch must add the $_fax property to Twilio\\Rest\\Client',
-        );
+        // SignalWire\Rest\Client declares a protected $_fax cache slot so
+        // getFax() can return the same instance on repeated access. If the
+        // property weren't declared, PHP 8.2+ would emit a dynamic-property
+        // deprecation and (more importantly) the cache would silently fail.
+        // Same identity on the second access proves the slot is wired.
+        $client = new SignalWireClient('project-sid', 'token', [
+            'signalwireSpaceUrl' => 'example.signalwire.com',
+        ]);
+        $this->assertSame($client->fax, $client->fax);
     }
 
-    public function testTwilioClientHasGetFaxMethodAfterPatch(): void
+    public function testSignalwireClientFaxIsResolvableByMagicGetter(): void
     {
-        $r = new ReflectionClass(TwilioClient::class);
-        $this->assertTrue(
-            $r->hasMethod('getFax'),
-            'add-client-fax-support.patch must add the getFax() method to Twilio\\Rest\\Client',
-        );
-
-        $returnType = $r->getMethod('getFax')->getReturnType();
-        $this->assertNotNull($returnType);
-        $this->assertSame(TwilioFax::class, $returnType->getName());
+        // ->fax goes through Twilio\Domain::__get('fax'), which calls
+        // getFax() if it exists on the instance. The assertion proves
+        // SignalWire\Rest\Client has the getFax() method (overriding the
+        // one Twilio removed in v6.38+) and returns the expected type.
+        $client = new SignalWireClient('project-sid', 'token', [
+            'signalwireSpaceUrl' => 'example.signalwire.com',
+        ]);
+        $this->assertInstanceOf(TwilioFax::class, $client->fax);
     }
 
     public function testFaxV1ExposesFaxesAsListResource(): void
