@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/Twilio/Rest/Fax/V1/FaxOptions.php
-@@ -0,0 +1,266 @@
+@@ -0,0 +1,267 @@
 +<?php
 +
 +/**

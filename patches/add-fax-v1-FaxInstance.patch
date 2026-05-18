@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/Twilio/Rest/Fax/V1/FaxInstance.php
-@@ -0,0 +1,163 @@
+@@ -0,0 +1,164 @@
 +<?php
 +
 +/**
