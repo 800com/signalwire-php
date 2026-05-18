@@ -131,8 +131,13 @@ class FaxV1Test extends TestCase
             'signalwireSpaceUrl' => 'example.signalwire.com',
         ]);
 
-        // baseUrl is a public property on Twilio\Domain.
-        $this->assertSame('example.signalwire.com', $client->fax->baseUrl);
+        $fax = $client->fax;
+        // baseUrl is protected on Twilio\Domain — reach in via reflection.
+        // Going through magic __get throws because Fax's __get only resolves
+        // "version"-style names (getV1, getFaxes, ...).
+        $prop = (new ReflectionObject($fax))->getProperty('baseUrl');
+        $prop->setAccessible(true);
+        $this->assertSame('https://example.signalwire.com', $prop->getValue($fax));
     }
 
     public function testFaxListIsResolvableThroughClientChain(): void
