@@ -2,7 +2,7 @@ name: Build and Test CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, "improvement/**", "feature/**", "bugfix/**", "hotfix/**"]
   pull_request:
     branches: [master]
 
