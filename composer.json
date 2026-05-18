@@ -22,8 +22,12 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "SignalWire\\": "src/"
+      "SignalWire\\": "src/",
+      "Twilio\\Rest\\Fax\\": "src/Twilio/Rest/Fax/"
     },
+    "classmap": [
+      "src/Twilio/Rest/Fax.php"
+    ],
     "files": [ "src/functions.php", "src/Version.php" ]
   },
   "authors": [
@@ -45,34 +49,10 @@
     "monolog/monolog": "^1.24 || ^2.0 || ^3.0",
     "ramsey/uuid": "^3.8 || ^4.0",
     "recoil/react": "1.0.3",
-    "guzzlehttp/guzzle": ">=6.0",
-    "cweagans/composer-patches": "^2.0"
+    "guzzlehttp/guzzle": ">=6.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^8",
     "php-vcr/php-vcr": "dev-master"
-  },
-  "config": {
-    "allow-plugins": {
-      "cweagans/composer-patches": true
-    }
-  },
-  "extra": {
-    "patches": {
-      "twilio/sdk": {
-        "Add missing Fax domain support": "patches/add-fax-domain.patch",
-        "Add Fax support to Client": "patches/add-client-fax-support.patch",
-        "Add Fax V1 main class": "patches/add-fax-v1-main.patch",
-        "Add Fax V1 Context": "patches/add-fax-v1-FaxContext.patch",
-        "Add Fax V1 Instance": "patches/add-fax-v1-FaxInstance.patch",
-        "Add Fax V1 List": "patches/add-fax-v1-FaxList.patch",
-        "Add Fax V1 Options": "patches/add-fax-v1-FaxOptions.patch",
-        "Add Fax V1 Page": "patches/add-fax-v1-FaxPage.patch",
-        "Add Fax V1 Media Context": "patches/add-fax-v1-fax-FaxMediaContext.patch",
-        "Add Fax V1 Media Instance": "patches/add-fax-v1-fax-FaxMediaInstance.patch",
-        "Add Fax V1 Media List": "patches/add-fax-v1-fax-FaxMediaList.patch",
-        "Add Fax V1 Media Page": "patches/add-fax-v1-fax-FaxMediaPage.patch"
-      }
-    }
   }
 }

@@ -5,6 +5,11 @@ class Client extends \Twilio\Rest\Client {
   const ENV_SW_SPACE = "SIGNALWIRE_SPACE_URL";
   const ENV_SW_HOSTNAME = "SIGNALWIRE_API_HOSTNAME";
 
+  // Twilio removed the Fax domain in twilio/sdk v6.38+, including the $_fax
+  // property on Twilio\Rest\Client. Re-declared here so this subclass's
+  // getFax() cache works without dynamic-property deprecation on PHP 8.2+.
+  protected $_fax;
+
   public function __construct($project, $token, Array $options = array()) {
     $accountSid = null;
     $region = null;
