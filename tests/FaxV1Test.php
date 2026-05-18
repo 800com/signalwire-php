@@ -125,19 +125,16 @@ class FaxV1Test extends TestCase
         $this->assertInstanceOf(TwilioFax::class, $fax);
     }
 
-    public function testSignalWireFaxBaseUrlPointsAtSpace(): void
+    public function testSignalwireDomainPointsAtSpace(): void
     {
         $client = new SignalWireClient('project-sid', 'token', [
             'signalwireSpaceUrl' => 'example.signalwire.com',
         ]);
 
-        $fax = $client->fax;
-        // baseUrl is protected on Twilio\Domain — reach in via reflection.
-        // Going through magic __get throws because Fax's __get only resolves
-        // "version"-style names (getV1, getFaxes, ...).
-        $prop = (new ReflectionObject($fax))->getProperty('baseUrl');
-        $prop->setAccessible(true);
-        $this->assertSame('https://example.signalwire.com', $prop->getValue($fax));
+        // The Fax constructor copies $client->getSignalwireDomain() into its
+        // own baseUrl, so this is the value that ends up routing API calls
+        // through the SignalWire space instead of fax.twilio.com.
+        $this->assertSame('https://example.signalwire.com', $client->getSignalwireDomain());
     }
 
     public function testFaxListIsResolvableThroughClientChain(): void
