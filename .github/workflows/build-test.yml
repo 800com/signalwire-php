@@ -23,7 +23,7 @@ jobs:
           php-version: ${{ matrix.php-versions }}
 
       - name: Install dependencies
-        run: composer install --prefer-source --no-interaction
+        run: composer install --prefer-dist --no-interaction
 
       - name: Run setup tests
         run: |

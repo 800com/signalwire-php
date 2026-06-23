@@ -190,7 +190,7 @@ class SignalWire800comTest
     {
         $this->test('Call routing with Dial', function() {
             $response = new VoiceResponse();
-            $dial = $response->dial('Dial', [
+            $dial = $response->dial('', [
                 'action' => 'https://api.800.com/signalwire/calls/status',
                 'answerOnBridge' => true,
                 'record' => 'record-from-answer-dual',
@@ -206,7 +206,7 @@ class SignalWire800comTest
 
         $this->test('SIP bridging', function() {
             $response = new VoiceResponse();
-            $dial = $response->dial('Dial', [
+            $dial = $response->dial('', [
                 'action' => 'https://api.800.com/signalwire/calls/status',
                 'statusCallback' => 'https://api.800.com/signalwire/sip-domains/status'
             ]);
@@ -238,7 +238,7 @@ class SignalWire800comTest
     {
         $this->test('SIP domain handling', function() {
             $response = new VoiceResponse();
-            $dial = $response->dial('Dial');
+            $dial = $response->dial();
             $dial->sip('sip:user@800-users.sip.signalwire.com', [
                 'statusCallback' => 'https://api.800.com/signalwire/sip-domains/status',
                 'statusCallbackEvent' => 'initiated ringing answered completed'

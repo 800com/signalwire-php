@@ -36,7 +36,7 @@ class FaxMediaInstance extends InstanceResource {
      *                       with
      * @param string $sid The unique string that identifies the resource to fetch
      */
-    public function __construct(Version $version, array $payload, string $faxSid, string $sid = null) {
+    public function __construct(Version $version, array $payload, string $faxSid, ?string $sid = null) {
         parent::__construct($version);
 
         // Marshaled Properties

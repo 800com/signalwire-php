@@ -40,9 +40,9 @@ To setup the dev environment follow these steps:
 
 #### Key Features
 
-🚀 **Automated Patch System**: Uses composer-patches v2.0 to automatically restore missing Fax functionality during installation
+🚀 **Vendored Fax Shim**: The Fax classes removed from newer Twilio SDK versions are shipped directly in `src/Twilio/Rest/Fax/` and autoloaded via this package's `composer.json` — no patches, plugins, or `composer install` hooks required.
 
-🔧 **Complete Fax Restoration**: All missing Fax classes from Twilio SDK v6.33.0 restored to v6.44.4:
+🔧 **Complete Fax Restoration**: All Fax classes removed from Twilio SDK after v6.37.1 are restored (verified against v6.44.4):
 - Fax domain class (`Fax.php`)
 - Client Fax support (`getFax()` method)
 - Fax V1 main class (`V1.php`)
@@ -74,15 +74,14 @@ The SignalWire development container is already configured in the Docker Compose
    docker compose exec 800-signalwire-dev bash
    ```
 
-4. **Install dependencies with automated patch system:**
+4. **Install dependencies:**
    ```bash
    composer install
    ```
    
-   The automated patch system will:
+   The install will:
    - Install all dependencies
-   - Apply 12 patches to restore Fax functionality
-   - Generate patches.lock.json for consistency
+   - Autoload the vendored Twilio Fax shim classes from `src/Twilio/Rest/Fax/` (no patches applied)
    - Require zero manual intervention
 
 5. **Test the setup (run from inside the container):**
@@ -107,48 +106,20 @@ The SignalWire development container is already configured in the Docker Compose
    - ✅ DTMF gathering and conferencing
    - ✅ Webhook routing and redirects
 
-#### Automated Patch System
+#### Vendored Fax Shim
 
-This fork includes a sophisticated automated patch system that restores Fax functionality removed from newer Twilio SDK versions:
+Twilio removed the Fax domain from `twilio/sdk` after v6.37.1. Rather than pinning to that old SDK (or relying on a `composer-patches` plugin), this fork ships the Fax classes directly in source and autoloads them:
 
-**Configuration** (in `composer.json`):
-```json
-{
-  "require-dev": {
-    "cweagans/composer-patches": "^2.0"
-  },
-  "config": {
-    "allow-plugins": {
-      "cweagans/composer-patches": true
-    }
-  },
-  "extra": {
-    "patches": {
-      "twilio/sdk": {
-        "Add missing Fax domain support": "patches/add-fax-domain.patch",
-        "Add Fax support to Client": "patches/add-client-fax-support.patch",
-        "Add Fax V1 main class": "patches/add-fax-v1-main.patch",
-        "Add Fax V1 Context": "patches/add-fax-v1-FaxContext.patch",
-        "Add Fax V1 Instance": "patches/add-fax-v1-FaxInstance.patch",
-        "Add Fax V1 List": "patches/add-fax-v1-FaxList.patch",
-        "Add Fax V1 Options": "patches/add-fax-v1-FaxOptions.patch",
-        "Add Fax V1 Page": "patches/add-fax-v1-FaxPage.patch",
-        "Add Fax V1 Media Context": "patches/add-fax-v1-fax-FaxMediaContext.patch",
-        "Add Fax V1 Media Instance": "patches/add-fax-v1-fax-FaxMediaInstance.patch",
-        "Add Fax V1 Media List": "patches/add-fax-v1-fax-FaxMediaList.patch",
-        "Add Fax V1 Media Page": "patches/add-fax-v1-fax-FaxMediaPage.patch"
-      }
-    }
-  }
-}
-```
+- **Classes** live under `src/Twilio/Rest/Fax/` (the `V1` domain, `FaxList`/`FaxInstance`/`FaxContext`/`FaxOptions`/`FaxPage`, and the `Fax/Fax/FaxMedia*` classes) plus `src/Twilio/Rest/Fax.php`.
+- **Autoloading** is configured in `composer.json` via the `Twilio\Rest\Fax\` PSR-4 prefix and the `src/Twilio/Rest/Fax.php` classmap entry — no plugin, no `patches/` directory, no `composer install` hook.
+- **Client compatibility**: `src/Rest/Client.php` re-declares the `$_fax` property so `getFax()` keeps working without a PHP 8.2+ dynamic-property deprecation.
 
-**Patch Files**: All patches are located in the `patches/` directory and are automatically applied during `composer install`.
+This lets `twilio/sdk` be upgraded to `^6.44` while preserving the Fax API surface 800com relies on.
 
 **Testing from Scratch**:
 ```bash
-# Remove vendor and install fresh (tests complete automation)
-rm -rf vendor composer.lock patches.lock.json
+# Remove vendor and install fresh
+rm -rf vendor composer.lock
 composer install
 php test-800com-integration.php
 ```
@@ -159,14 +130,11 @@ php test-800com-integration.php
 # Check PHP version (should be 8.3.23)
 docker compose exec 800-signalwire-dev php -v
 
-# Fresh install with automated patches
+# Fresh install (vendored Fax shim autoloads automatically)
 docker compose exec 800-signalwire-dev composer install
 
 # Update dependencies for PHP 8.3 compatibility
 docker compose exec 800-signalwire-dev composer update
-
-# Reapply patches manually (if needed)
-docker compose exec 800-signalwire-dev composer patches-repatch
 
 # Run comprehensive integration tests
 docker compose exec 800-signalwire-dev php test-800com-integration.php
@@ -214,10 +182,10 @@ To use the local development version in your 800com-api:
 #### Technical Implementation Details
 
 **Fax Functionality Restoration**:
-- **Problem**: Twilio SDK v6.44.4 removed Fax classes that SignalWire depends on
-- **Solution**: Automated patch system restores missing classes from v6.33.0
-- **Implementation**: 12 individual patches targeting specific missing functionality
-- **Result**: 100% compatibility with existing 800com Fax workflows
+- **Problem**: Twilio SDK after v6.37.1 removed Fax classes that SignalWire depends on
+- **Solution**: Fax classes are vendored directly into `src/Twilio/Rest/Fax/` and autoloaded via `composer.json`
+- **Implementation**: PSR-4 (`Twilio\Rest\Fax\`) + classmap (`src/Twilio/Rest/Fax.php`); `Client::$_fax` re-declared for PHP 8.2+
+- **Result**: `twilio/sdk` upgradeable to `^6.44` with full compatibility for existing 800com Fax workflows
 
 **PHP 8.3 Compatibility**:
 - Updated all dependencies to support PHP 8.3.23
@@ -271,8 +239,7 @@ The automated system achieves **100% success rate** on all tests:
 - **Dependency conflicts**: Run `composer update` to resolve PHP 8.3 compatibility issues
 - **Container won't start**: Check logs with `docker compose logs 800-signalwire-dev`
 - **Permission issues**: Ensure proper file permissions in the mounted volume
-- **Patch failures**: Check `patches.lock.json` and run `composer patches-relock`
-- **Fax functionality missing**: Verify all 12 patches applied during installation
+- **Fax functionality missing**: Confirm `composer dump-autoload` ran and the `Twilio\Rest\Fax\` PSR-4 prefix + `src/Twilio/Rest/Fax.php` classmap are present in `composer.json`
 
 ## Versioning
 
